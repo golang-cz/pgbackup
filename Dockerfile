@@ -1,8 +1,10 @@
-FROM python:alpine3.10
+FROM python:alpine3.11
 
-RUN pip install --no-cache-dir awscli==1.16.305
+RUN pip install --no-cache-dir awscli==1.18.54
 
-RUN apk add --no-cache --update postgresql-client
+RUN apk add --no-cache --update postgresql-client>12.2
+
+RUN aws --version && psql --version
 
 WORKDIR /aws
 
