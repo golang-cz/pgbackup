@@ -1,20 +1,16 @@
-# pgbackup - pg_dump Postgres DB into S3 bucket
+# pgbackup (pg_dump/pg_restore) Postgres DB into S3 bucket
 
-https://hub.docker.com/r/pressly/pgbackup/tags
+https://github.com/golangcz/pgbackup/packages/214376/versions
 
-## Usage
-
-```
-docker run -it -e DB=postgres://user@domain:5432/dbname -e PGPASSWORD=XXX -e BUCKET=my-bucket-name/subdir pressly/pgbackup:pg11awscli1.16.305
-```
-
-## Build
+# Docker usage
 
 ```
-docker build -f Dockerfile -t pressly/pgbackup:pg11awscli1.16.305 $(mktemp -d)
+docker run -it -e DB=postgres://user@domain:5432/dbname -e PGPASSWORD=XXX -e BUCKET=my-bucket-name/subdir pressly/pgbackup:pg12awscli1.18.54
 ```
 
-## Kubernetes cron job to backup Postgres DB to S3
+# Kubernetes usage
+
+## Nightly cron job to backup Postgres DB to S3
 
 ```
 apiVersion: batch/v1beta1
@@ -31,7 +27,7 @@ spec:
           serviceAccountName: backups
           containers:
           - name: pgbackup
-            image: pressly/pgbackup:pg11awscli1.16.305
+            image: pressly/pgbackup:pg12awscli1.18.54
             command:
               - sh
               - -c
@@ -47,7 +43,7 @@ spec:
                 value: db-backups
 ```
 
-## Kubernetes one-time pod to import latest DB backup from S3
+## Single-use pod to import (restore) the latest DB backup from S3
 
 ```
 apiVersion: v1
@@ -59,7 +55,7 @@ spec:
   serviceAccountName: backups
   containers:
     - name: pgrestore
-      image: pressly/pgbackup:pg11awscli1.16.305
+      image: pressly/pgbackup:pg12awscli1.18.54
       command:
         - sh
         - -c
